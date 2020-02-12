@@ -1,81 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdShoppingCart } from 'react-icons/md';
+
+import api from '../../services/api';
+import { formatPrice } from '../../util/format';
 
 import { ProductList } from './styles';
 
 export default function Home() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const { data } = await api.get('/products');
+
+      const formattedData = data.map(p => ({
+        ...p,
+        price: formatPrice(p.price),
+      }));
+
+      setProducts(formattedData);
+      console.log(formattedData);
+    };
+    getProducts();
+  }, []);
+
   return (
     <ProductList>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/sapatenis-lona-sapatofran-polo-masculino/03/HAP-0176-003/HAP-0176-003_detalhe2.jpg?ims=326x"
-          alt="coolest shoe"
-        />
-        <strong>Very coolest shoe</strong>
-        <span>USD 129,90</span>
-        <button type="button">
-          <div>
-            <MdShoppingCart size={16} color="#fff" /> 3
-          </div>
-          <span>Add to cart</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/sapatenis-lona-sapatofran-polo-masculino/03/HAP-0176-003/HAP-0176-003_detalhe2.jpg?ims=326x"
-          alt="coolest shoe"
-        />
-        <strong>Very coolest shoe</strong>
-        <span>USD 129,90</span>
-        <button type="button">
-          <div>
-            <MdShoppingCart size={16} color="#fff" /> 3
-          </div>
-          <span>Add to cart</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/sapatenis-lona-sapatofran-polo-masculino/03/HAP-0176-003/HAP-0176-003_detalhe2.jpg?ims=326x"
-          alt="coolest shoe"
-        />
-        <strong>Very coolest shoe</strong>
-        <span>USD 129,90</span>
-        <button type="button">
-          <div>
-            <MdShoppingCart size={16} color="#fff" /> 3
-          </div>
-          <span>Add to cart</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/sapatenis-lona-sapatofran-polo-masculino/03/HAP-0176-003/HAP-0176-003_detalhe2.jpg?ims=326x"
-          alt="coolest shoe"
-        />
-        <strong>Very coolest shoe</strong>
-        <span>USD 129,90</span>
-        <button type="button">
-          <div>
-            <MdShoppingCart size={16} color="#fff" /> 3
-          </div>
-          <span>Add to cart</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/sapatenis-lona-sapatofran-polo-masculino/03/HAP-0176-003/HAP-0176-003_detalhe2.jpg?ims=326x"
-          alt="coolest shoe"
-        />
-        <strong>Very coolest shoe</strong>
-        <span>USD 129,90</span>
-        <button type="button">
-          <div>
-            <MdShoppingCart size={16} color="#fff" /> 3
-          </div>
-          <span>Add to cart</span>
-        </button>
-      </li>
+      {products.map(product => (
+        <li key={product.id}>
+          <img src={product.image} alt="Coolest Shoe" />
+          <strong>{product.title}</strong>
+          <span>{product.price}</span>
+          <button type="button">
+            <div>
+              <MdShoppingCart size={16} color="#fff" /> 3
+            </div>
+            <span>Add to cart</span>
+          </button>
+        </li>
+      ))}
     </ProductList>
   );
 }
