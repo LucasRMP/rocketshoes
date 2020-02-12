@@ -9,7 +9,7 @@ import { formatPrice } from '../../util/format';
 
 import { ProductList } from './styles';
 
-function Home({ addToCart }) {
+function Home({ addToCart, amount }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ function Home({ addToCart }) {
           <span>{product.formattedPrice}</span>
           <button type="button" onClick={() => handleAddProduct(product)}>
             <div>
-              <MdShoppingCart size={16} color="#fff" /> 3
+              <MdShoppingCart size={16} color="#fff" /> {amount[product.id] || 0}
             </div>
             <span>Add to cart</span>
           </button>
@@ -49,7 +49,14 @@ function Home({ addToCart }) {
   );
 }
 
+const mapStateToProps = state => ({
+  amount: state.cart.reduce((amount, p) => {
+    amount[p.id] = p.amount;
+    return amount;
+  }, {}),
+});
+
 const mapDispatchToProps = dispatch =>
   bindActionCreators(CartActions, dispatch);
 
-export default connect(null, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

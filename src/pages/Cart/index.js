@@ -8,9 +8,11 @@ import {
 } from 'react-icons/md';
 
 import * as CartActions from '../../store/modules/cart/actions';
+import { formatPrice } from '../../util/format';
+
 import { Container, ProductTable, Total } from './styles';
 
-function Cart({ cart, removeFromCart, updateAmount }) {
+function Cart({ cart, removeFromCart, updateAmount, total }) {
   const increment = product => updateAmount(product.id, product.amount + 1);
   const decrement = product => updateAmount(product.id, product.amount - 1);
 
@@ -34,7 +36,7 @@ function Cart({ cart, removeFromCart, updateAmount }) {
               </td>
               <td>
                 <strong>{item.title}</strong>
-                <span>{item.price}</span>
+                <span>{item.formattedPrice}</span>
               </td>
               <td>
                 <div>
@@ -54,7 +56,7 @@ function Cart({ cart, removeFromCart, updateAmount }) {
                 </div>
               </td>
               <td>
-                <strong>{item.formattedPrice}</strong>
+                <strong>{item.subtotal}</strong>
               </td>
               <td>
                 <button type="button">
@@ -74,14 +76,22 @@ function Cart({ cart, removeFromCart, updateAmount }) {
         <button type="button">Finish order</button>
         <Total>
           <span>TOTAL</span>
-          <strong>USD 1920.20</strong>
+          <strong>{total}</strong>
         </Total>
       </footer>
     </Container>
   );
 }
 
-const mapStateToProps = state => ({ cart: state.cart });
+const mapStateToProps = state => ({
+  cart: state.cart.map(p => ({
+    ...p,
+    subtotal: formatPrice(p.price * p.amount),
+  })),
+  total: formatPrice(
+    state.cart.reduce((total, p) => total + p.price * p.amount, 0)
+  ),
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(CartActions, dispatch);
