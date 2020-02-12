@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   MdRemoveCircleOutline,
   MdAddCircleOutline,
@@ -7,7 +8,11 @@ import {
 
 import { Container, ProductTable, Total } from './styles';
 
-export default function Cart() {
+function Cart({ cart, dispatch }) {
+  const removeFromCart = id => {
+    dispatch({ type: 'REMOVE_FROM_CART', id });
+  };
+
   return (
     <Container>
       <ProductTable>
@@ -21,37 +26,40 @@ export default function Cart() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <img
-                src="https://static.netshoes.com.br/produtos/sapatenis-lona-sapatofran-polo-masculino/03/HAP-0176-003/HAP-0176-003_detalhe2.jpg?ims=326x"
-                alt="coolest shoe"
-              />
-            </td>
-            <td>
-              <strong>Collest shoe</strong>
-              <span>USD 142.48</span>
-            </td>
-            <td>
-              <div>
+          {cart.map(item => (
+            <tr key={item.id}>
+              <td>
+                <img src={item.image} alt={item.title} />
+              </td>
+              <td>
+                <strong>{item.title}</strong>
+                <span>{item.price}</span>
+              </td>
+              <td>
+                <div>
+                  <button type="button">
+                    <MdRemoveCircleOutline color="#7159c1" />
+                  </button>
+                  <input type="number" readOnly value={item.amount} />
+                  <button type="button">
+                    <MdAddCircleOutline color="#7159c1" />
+                  </button>
+                </div>
+              </td>
+              <td>
+                <strong>{item.formattedPrice}</strong>
+              </td>
+              <td>
                 <button type="button">
-                  <MdRemoveCircleOutline color="#7159c1" />
+                  <MdDelete
+                    size={20}
+                    color="#7159c1"
+                    onClick={() => removeFromCart(item.id)}
+                  />
                 </button>
-                <input type="number" readOnly value={5} />
-                <button type="button"> 
-                  <MdAddCircleOutline color="#7159c1" />
-                </button>
-              </div>
-            </td>
-            <td>
-              <strong>USD 712.40</strong>
-            </td>
-            <td>
-              <button type="button">
-                <MdDelete size={20} color="#7159c1" />
-              </button>
-            </td>
-          </tr>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </ProductTable>
 
@@ -65,3 +73,11 @@ export default function Cart() {
     </Container>
   );
 }
+
+function mapStateToProps(state) {
+  return {
+    cart: state.cart,
+  };
+}
+
+export default connect(mapStateToProps)(Cart);
