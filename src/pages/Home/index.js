@@ -9,7 +9,7 @@ import { formatPrice } from '../../util/format';
 
 import { ProductList } from './styles';
 
-function Home({ addToCart, amount }) {
+function Home({ addToCartRequest, amount }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -26,10 +26,6 @@ function Home({ addToCart, amount }) {
     getProducts();
   }, []);
 
-  const handleAddProduct = product => {
-    addToCart(product);
-  };
-
   return (
     <ProductList>
       {products.map(product => (
@@ -37,7 +33,7 @@ function Home({ addToCart, amount }) {
           <img src={product.image} alt="Coolest Shoe" />
           <strong>{product.title}</strong>
           <span>{product.formattedPrice}</span>
-          <button type="button" onClick={() => handleAddProduct(product)}>
+          <button type="button" onClick={() => addToCartRequest(product.id)}>
             <div>
               <MdShoppingCart size={16} color="#fff" /> {amount[product.id] || 0}
             </div>

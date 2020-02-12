@@ -63,6 +63,14 @@ export const ProductTable = styled.table`
   div {
     display: flex;
     align-items: center;
+    
+    button {
+      cursor: default;
+
+      svg {
+        cursor: pointer;
+      }
+    }
 
     input {
       border: 1px solid #ddd;
