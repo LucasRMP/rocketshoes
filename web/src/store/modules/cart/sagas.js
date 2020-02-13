@@ -45,6 +45,7 @@ function* updateAmount({ id, amount }) {
   const stockAmount = stock.data.amount;
   if (amount > stockAmount) {
     toast.error('Out of stock!');
+    return;
   }
 
   yield put(updateAmountSuccess(id, amount));
